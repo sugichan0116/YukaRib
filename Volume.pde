@@ -1,4 +1,3 @@
-
 public static class Volume{
   
   public static class Integer {
@@ -39,16 +38,24 @@ public static class Volume{
       if(value > limit.Max()) value = limit.Max();
     }
     
-    public int Value() {
+    public int GetValue() {
       return value;
     }
     
-    public float NormalizeValue() {
+    public float GetNormalizeValue() {
       return norm(float(value), limit.Min(), limit.Max());
     }
     
+    public boolean IsStart() {
+      return value == limit.Min();
+    }
+    
+    public boolean IsEnd() {
+      return value == limit.Max();
+    }
+    
     public String toString() {
-      return "{" + limit.Min() + "< " + Value() + " <" + limit.Max() + "}";
+      return "{" + limit.Min() + "< " + GetValue() + " <" + limit.Max() + "}";
     }
   }
   
@@ -90,16 +97,24 @@ public static class Volume{
       if(value > limit.Max()) value = limit.Max();
     }
     
-    public float Value() {
+    public float GetValue() {
       return value;
     }
     
-    public float NormalizeValue() {
+    public float GetNormalizeValue() {
       return norm(value, limit.Min(), limit.Max());
     }
     
+    public boolean IsStart() {
+      return value == limit.Min();
+    }
+    
+    public boolean IsEnd() {
+      return value == limit.Max();
+    }
+    
     public String toString() {
-      return "{" + limit.Min() + "< " + Value() + " <" + limit.Max() + "}";
+      return "{" + limit.Min() + "< " + GetValue() + " <" + limit.Max() + "}";
     }
   }
 }

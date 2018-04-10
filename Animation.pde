@@ -1,4 +1,3 @@
-
 public static class Animation extends Volume.Float{
   private PImage[] anime;
   
@@ -28,7 +27,7 @@ public static class Animation extends Volume.Float{
   }
   
   public int GetIndex() {
-    return floor(float(anime.length - 1) * NormalizeValue());
+    return floor(float(anime.length - 1) * GetNormalizeValue());
   }
   
   public PImage GetImage() {
