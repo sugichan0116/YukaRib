@@ -3,6 +3,7 @@ public static class Transition {
   private ArrayList<Trigger.Integer> triggerIntegers;
   private ArrayList<Trigger.Boolean> triggerBooleans;
   private Animation destination;
+  final String mode = "||";
   
   Transition() {
     triggerFloats = new ArrayList<Trigger.Float>();
@@ -21,14 +22,31 @@ public static class Transition {
     triggerFloats.add(trigger);
     return this;
   }
+  public Transition Trigger(Trigger.Integer trigger) {
+    triggerIntegers.add(trigger);
+    return this;
+  }
+  public Transition Trigger(Trigger.Boolean trigger) {
+    triggerBooleans.add(trigger);
+    return this;
+  }
+  
+  private boolean IsPair(boolean a, boolean b) {
+    return (mode == "&&") ? (a && b) : (a || b);
+  }
   
   public boolean IsTransfer() {
+    boolean isTrigger = (mode == "&&");
     for(Trigger.Float t : triggerFloats) {
-      if(t.IsTrigger()) {
-        return true;
-      }
+      isTrigger = IsPair(isTrigger, t.IsTrigger());
     }
-    return false;
+    for(Trigger.Integer i : triggerIntegers) {
+      isTrigger = IsPair(isTrigger, i.IsTrigger());
+    }
+    for(Trigger.Boolean b : triggerBooleans) {
+      isTrigger = IsPair(isTrigger, b.IsTrigger());
+    }
+    return isTrigger;
   }
   
   public Animation GetDestination() {
@@ -36,6 +54,6 @@ public static class Transition {
   }
   
   public String toString() {
-    return "{" + "}";
+    return "{" + IsTransfer() + "}";
   }
 }

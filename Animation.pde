@@ -39,6 +39,10 @@ public static class Animation extends Volume.Float{
     return this;
   }
   
+  private Boolean IsTransfer() {
+    return GetDestination() != null;
+  }
+  
   public Animation GetDestination() {
     for(Transition t: list) {
       if(t.IsTransfer()) return t.GetDestination();
@@ -53,6 +57,10 @@ public static class Animation extends Volume.Float{
   
   public PImage GetImage() {
     return anime[GetIndex()];
+  }
+  
+  public String toString() {
+    return "{" + IsTransfer() + GetIndex() + "}";
   }
   
 }

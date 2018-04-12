@@ -32,10 +32,11 @@ void setup() {
   
   Transition[] tra = new Transition[8];
   Trigger.Float tri = new Trigger.Float("EAT", ">=", .5f);
-  Trigger.Float tri2 = new Trigger.Float("WALK", ">=", .5f);
+  Trigger.Boolean tri2 = new Trigger.Boolean("WALK");
+  Trigger.Boolean tri3 = new Trigger.Boolean("ATE");
   tra[0] = Transition.Create().Trigger(tri2);
   tra[1] = Transition.Create().Trigger(tri);
-  tra[2] = Transition.Create().Trigger(tri2);
+  tra[2] = Transition.Create().Trigger(tri3);
   ani = Animation.Create()
     .Images(icons.get("SLIME"))
     .Limit(new Limit.Float(0f, .8f));
@@ -49,14 +50,17 @@ void setup() {
     .HeadAnimation("WALKING", ani)
     .Animation("EATING", eat)
     .Float("EAT", 0f)
-    .Float("WALK", 0f);
+    .Boolean("WALK", false)
+    .Boolean("ATE", false);
 }
 
 void draw() {
   background(255);
   slime.Time(1f / frameRate)
     .Float("EAT", (mousePressed) ? 1f : 0f)
+    .Boolean("WALK", ani.IsEnd())
+    .Boolean("ATE", eat.IsEnd())
     .Update();
   image(slime.GetImage(), 0, 0);
-  println("*" + slime + slime.floats.get("EAT") + ani.list.get(1).triggerFloats.get(0));
+  println("*" + slime + slime.booleans.get("WALK") + ani.list.get(0) + ani);
 }

@@ -49,8 +49,14 @@ public static class AnimationField {
   private void Transfer() {
     Animation destination = GetHead().GetDestination();
     if(destination != null) {
+      println("* ====================");
       for(String Key: list.keySet()) {
-        if(list.get(Key) == destination) headKey = Key; 
+        if(list.get(Key) == destination) {
+          headKey = Key;
+          GetHead().Value(0f);
+          println("* HEAD had changed");
+          return;
+        }
       }
     }
   }

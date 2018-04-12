@@ -33,7 +33,7 @@ public static class Trigger {
     }
     
     public String toString() {
-      return "{" + valueKey + ":" + value + mode + threshold + "}";
+      return "{" + IsTrigger() + ", " + valueKey + ":" + value + mode + threshold + "}";
     }
   }
   public static class Float {
@@ -70,7 +70,7 @@ public static class Trigger {
     }
     
     public String toString() {
-      return "{" + valueKey + ":" + value + mode + threshold + "}";
+      return "{" + IsTrigger() + ", " + valueKey + ":" + value + mode + threshold + "}";
     }
   }
   public static class Boolean {
@@ -94,7 +94,7 @@ public static class Trigger {
     }
     
     public String toString() {
-      return "{" + valueKey + ":" + value + "}";
+      return "{" + IsTrigger() + ", " + valueKey + ":" + value + "}";
     }
   }
 }
