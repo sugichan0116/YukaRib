@@ -21,6 +21,8 @@ Limit.Float limitMax = Limit.Float.Create().Set(0, 255);
 Volume.Float edu = Volume.Float.Create().Limit(limitMax).Value(4f);
 AnimationField slime;
 Animation ani, eat;
+int a;
+Transition t;
 
 void setup() {
   println("* image loading...");
@@ -30,9 +32,10 @@ void setup() {
   
   Transition[] tra = new Transition[8];
   Trigger.Float tri = new Trigger.Float("EAT", ">=", .5f);
-  tra[0] = Transition.Create().Trigger(tri);
+  Trigger.Float tri2 = new Trigger.Float("WALK", ">=", .5f);
+  tra[0] = Transition.Create().Trigger(tri2);
   tra[1] = Transition.Create().Trigger(tri);
-  tra[2] = Transition.Create().Trigger(tri);
+  tra[2] = Transition.Create().Trigger(tri2);
   ani = Animation.Create()
     .Images(icons.get("SLIME"))
     .Limit(new Limit.Float(0f, .8f));
@@ -45,12 +48,15 @@ void setup() {
   slime = AnimationField.Create()
     .HeadAnimation("WALKING", ani)
     .Animation("EATING", eat)
-    .Float("EAT", 0f);
+    .Float("EAT", 0f)
+    .Float("WALK", 0f);
 }
 
 void draw() {
-  ani.Add(1f / frameRate);
-  
-  image(ani.GetImage(), 0, 0);
-  println("*" + slime);
+  background(255);
+  slime.Time(1f / frameRate)
+    .Float("EAT", (mousePressed) ? 1f : 0f)
+    .Update();
+  image(slime.GetImage(), 0, 0);
+  println("*" + slime + slime.floats.get("EAT") + ani.list.get(1).triggerFloats.get(0));
 }
