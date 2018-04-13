@@ -29,6 +29,19 @@ public static class AnimationField {
     list.put(Key, target);
     return this;
   }
+  public AnimationField Transition(String From, String To, Transition... target) {
+    for(Transition t: target) {
+      GetAnimation(From).Transition(t.Destination(GetAnimation(To)));
+    }
+    return this;
+  }
+  public AnimationField BiTransition(String From, String To, Transition... target) {
+    for(Transition t: target) {
+      Transition(From, To, t);
+      Transition(To, From, t.CopyReverse());
+    }
+    return this;
+  }
   public AnimationField Float(String Key, Float value) {
     floats.put(Key, value);
     return this;
@@ -49,7 +62,6 @@ public static class AnimationField {
   private void Transfer() {
     Animation destination = GetHead().GetDestination();
     if(destination != null) {
-      println("* ====================");
       for(String Key: list.keySet()) {
         if(list.get(Key) == destination) {
           headKey = Key;
@@ -79,6 +91,10 @@ public static class AnimationField {
     
     GetHead().Add(timeOfFrame);
     Transfer();
+  }
+  
+  public Animation GetAnimation(String Key) {
+    return list.get(Key);
   }
   
   public Animation GetHead() {

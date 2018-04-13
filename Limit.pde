@@ -4,7 +4,11 @@ public static class Limit {
     private int min, max;
     
     Integer() {
-      min = max = 0;
+      Set(0, 0);
+    }
+    
+    Integer(int Max) {
+      Set(0, Max);
     }
     
     Integer(int Min, int Max) {
@@ -51,7 +55,11 @@ public static class Limit {
     private float min, max;
     
     Float() {
-      min = max = 0;
+      Set(0, 0);
+    }
+    
+    Float(float Max) {
+      Set(0, Max);
     }
     
     Float(float Min, float Max) {

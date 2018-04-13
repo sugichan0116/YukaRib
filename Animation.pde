@@ -1,10 +1,12 @@
 public static class Animation extends Volume.Float{
   private PImage[] anime;
   private ArrayList<Transition> list;
+  private boolean isLoop;
   
   //Constructors
   Animation() {
     anime = null;
+    isLoop = false;
     Clear();
   }
   public static Animation Create() {
@@ -12,6 +14,14 @@ public static class Animation extends Volume.Float{
   }
   public Animation Images(PImage[] Anime) {
     anime = Anime;
+    return this;
+  }
+  public Animation Loop() {
+    isLoop = true;
+    return this;
+  }
+  public Animation NoLoop() {
+    isLoop = false;
     return this;
   }
   public Animation Clear() {
@@ -35,7 +45,7 @@ public static class Animation extends Volume.Float{
     return this;
   }
   public Animation Sub(float Value) {
-    super.Add(Value);
+    super.Sub(Value);
     return this;
   }
   
@@ -52,6 +62,7 @@ public static class Animation extends Volume.Float{
   }
   
   public int GetIndex() {
+    if(isLoop && IsEnd()) Value(0f);
     return floor(float(anime.length - 1) * GetNormalizeValue());
   }
   

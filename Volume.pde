@@ -31,6 +31,14 @@ public static class Volume{
       Validate();
       return this;
     }
+    public Integer Max() {
+      Value(limit.Max());
+      return this;
+    }
+    public Integer Min() {
+      Value(limit.Min());
+      return this;
+    }
     
     private void Validate() {
       if(limit == null) return;
@@ -88,6 +96,14 @@ public static class Volume{
     public Float Sub(float Value) {
       value -= Value;
       Validate();
+      return this;
+    }
+    public Float Max() {
+      Value(limit.Max());
+      return this;
+    }
+    public Float Min() {
+      Value(limit.Min());
       return this;
     }
     

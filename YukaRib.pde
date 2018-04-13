@@ -20,47 +20,51 @@ Volume.Integer dex = Volume.Integer.Create().Limit(limit).Value(4);
 Limit.Float limitMax = Limit.Float.Create().Set(0, 255);
 Volume.Float edu = Volume.Float.Create().Limit(limitMax).Value(4f);
 AnimationField slime;
-Animation ani, eat;
-int a;
-Transition t;
+Volume.Float eat;
 
 void setup() {
   println("* image loading...");
   icons = new HashMap<String, PImage[]>();
-  icons.put("SLIME", image.Slice("slime.png", 32, 32, 4, 4));
+  icons.put("SLIME_RIGHT", image.Slice("slime2.png", 32, 32, 2, 2));
+  icons.put("SLIME_LEFT", image.Slice("slime2.png", 32, 32, -2, 2));
+  icons.put("SLIME_DOWN", image.Slice("slime_b.png", 32, 32, 2, 2));
+  icons.put("SLIME_UP", image.Slice("slime_a.png", 32, 32, 2, 2));
+  icons.put("SLIME_EAT", image.Slice("slime_e.png", 32, 32, 2, 2));
   icons.put("EAT", image.Slice("slime_e.png", 32, 32, 4, 4));
   
-  Transition[] tra = new Transition[8];
-  Trigger.Float tri = new Trigger.Float("EAT", ">=", .5f);
-  Trigger.Boolean tri2 = new Trigger.Boolean("WALK");
-  Trigger.Boolean tri3 = new Trigger.Boolean("ATE");
-  tra[0] = Transition.Create().Trigger(tri2);
-  tra[1] = Transition.Create().Trigger(tri);
-  tra[2] = Transition.Create().Trigger(tri3);
-  ani = Animation.Create()
-    .Images(icons.get("SLIME"))
-    .Limit(new Limit.Float(0f, .8f));
-  eat = Animation.Create()
-    .Images(icons.get("EAT"))
-    .Limit(new Limit.Float(0f, 2.2f));
-  ani.Transition(tra[0].Destination(ani))
-    .Transition(tra[1].Destination(eat));
-  eat.Transition(tra[2].Destination(ani));
-  slime = AnimationField.Create()
-    .HeadAnimation("WALKING", ani)
-    .Animation("EATING", eat)
+  Transition t = (new Transition()).Trigger(new Trigger.Float("EAT", ">=", 1f));
+  eat = (new Volume.Float()).Limit(new Limit.Float(3f));
+  slime = (new AnimationField())
+    .Boolean("RIGHT", false)
+    .Boolean("LEFT", false)
+    .Boolean("UP", false)
+    .Boolean("DOWN", false)
     .Float("EAT", 0f)
-    .Boolean("WALK", false)
-    .Boolean("ATE", false);
+    .HeadAnimation("IDLE", (new Animation()).Images(icons.get("SLIME_RIGHT")).Limit(new Limit.Float()))
+    .Animation("RIGHT", (new Animation()).Images(icons.get("SLIME_RIGHT")).Limit(new Limit.Float(1f)).Loop())
+    .Animation("LEFT", (new Animation()).Images(icons.get("SLIME_LEFT")).Limit(new Limit.Float(1.5f)).Loop())
+    .Animation("UP", (new Animation()).Images(icons.get("SLIME_UP")).Limit(new Limit.Float(1.2f)).Loop())
+    .Animation("DOWN", (new Animation()).Images(icons.get("SLIME_DOWN")).Limit(new Limit.Float(1.7f)).Loop())
+    .Animation("EAT", (new Animation()).Images(icons.get("SLIME_EAT")).Limit(new Limit.Float(2.0f)))
+    .BiTransition("IDLE", "LEFT", (new Transition()).Trigger(new Trigger.Boolean("LEFT")), t.CopyReverse())
+    .BiTransition("IDLE", "RIGHT", (new Transition()).Trigger(new Trigger.Boolean("RIGHT")), t.CopyReverse())
+    .BiTransition("IDLE", "UP", (new Transition()).Trigger(new Trigger.Boolean("UP")), t.CopyReverse())
+    .BiTransition("IDLE", "DOWN", (new Transition()).Trigger(new Trigger.Boolean("DOWN")), t.CopyReverse())
+    .BiTransition("IDLE", "EAT", t);
 }
 
 void draw() {
   background(255);
+  if(mousePressed) eat.Max();
+  eat.Sub(1f / frameRate);
+  
   slime.Time(1f / frameRate)
-    .Float("EAT", (mousePressed) ? 1f : 0f)
-    .Boolean("WALK", ani.IsEnd())
-    .Boolean("ATE", eat.IsEnd())
+    .Boolean("RIGHT", keyCode == RIGHT)
+    .Boolean("LEFT", keyCode == LEFT)
+    .Boolean("UP", keyCode == UP)
+    .Boolean("DOWN", keyCode == DOWN)
+    .Float("EAT", eat.GetValue())
     .Update();
   image(slime.GetImage(), 0, 0);
-  println("*" + slime + slime.booleans.get("WALK") + ani.list.get(0) + ani);
+  println("*" + slime + slime.booleans.get("WALK"));
 }
