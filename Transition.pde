@@ -2,32 +2,37 @@ public static class Transition {
   private ArrayList<Trigger.Float> triggerFloats;
   private ArrayList<Trigger.Integer> triggerIntegers;
   private ArrayList<Trigger.Boolean> triggerBooleans;
-  private boolean isReverse;
   private Animation destination;
   final String mode = "||";
+  private String logText;
   
   Transition() {
     triggerFloats = new ArrayList<Trigger.Float>();
     triggerIntegers = new ArrayList<Trigger.Integer>();
     triggerBooleans = new ArrayList<Trigger.Boolean>();
-    isReverse = false;
     destination = null;
+    logText = "";
   }
   public static Transition Create() {
     return new Transition();
   }
   public Transition Copy() {
-    Transition t = Create().Destination(destination).Reverse(isReverse);
-    t.triggerFloats = (ArrayList<Trigger.Float>)triggerFloats.clone();
-    t.triggerIntegers = (ArrayList<Trigger.Integer>)triggerIntegers.clone();
-    t.triggerBooleans = (ArrayList<Trigger.Boolean>)triggerBooleans.clone();
+    Transition t = Create().Destination(destination);
+    for(Trigger.Float f : triggerFloats) {
+      t.Trigger(f.Copy());
+    }
+    for(Trigger.Integer i : triggerIntegers) {
+      t.Trigger(i.Copy());
+    }
+    for(Trigger.Boolean b : triggerBooleans) {
+      t.Trigger(b.Copy());
+    }
     return t;
   }
-  public Transition CopyReverse() {
-    return Copy().Reverse();
-  }
-  public Transition Transition(Transition target) {
-    
+  public Transition Trigger(Transition target) {
+    triggerFloats.addAll(target.triggerFloats);
+    triggerIntegers.addAll(target.triggerIntegers);
+    triggerBooleans.addAll(target.triggerBooleans);
     return this;
   }
   public Transition Destination(Animation Destination) {
@@ -46,12 +51,17 @@ public static class Transition {
     triggerBooleans.add(trigger);
     return this;
   }
-  public Transition Reverse(boolean IsReverse) {
-    isReverse = IsReverse;
-    return this;
-  }
   public Transition Reverse() {
-    return Reverse(!isReverse);
+    for(Trigger.Float t : triggerFloats) {
+      t.Reverse();
+    }
+    for(Trigger.Integer i : triggerIntegers) {
+      i.Reverse();
+    }
+    for(Trigger.Boolean b : triggerBooleans) {
+      b.Reverse();
+    }
+    return this;
   }
   
   private boolean IsPair(boolean a, boolean b) {
@@ -69,14 +79,31 @@ public static class Transition {
     for(Trigger.Boolean b : triggerBooleans) {
       isTrigger = IsPair(isTrigger, b.IsTrigger());
     }
-    return isTrigger ^ isReverse;
+    return isTrigger;
   }
   
   public Animation GetDestination() {
     return destination;
   }
   
+  private String LogTrigger() {
+    String text = "";
+    if(IsTransfer()) {
+      for(Trigger.Float t : triggerFloats) {
+        text += ", " + t;
+      }
+      for(Trigger.Integer i : triggerIntegers) {
+        text += ", " + i;
+      }
+      for(Trigger.Boolean b : triggerBooleans) {
+        text += ", " + b;
+      }
+    }
+    return text;
+  }
+  
   public String toString() {
-    return "{" + IsTransfer() + "}";
+    String text = "{Trans:" + IsTransfer() + LogTrigger() + "}";
+    return text;
   }
 }

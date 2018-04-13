@@ -1,7 +1,6 @@
 public static class Trigger {
   public static class Integer {
     private int value, threshold;
-    private boolean isReverse;
     private String mode;
     private String valueKey;
     
@@ -9,7 +8,18 @@ public static class Trigger {
       valueKey = Key;
       mode = Mode;
       threshold = Threshold;
-      isReverse = false;
+    }
+    public Integer Reverse() {
+      String Mode = "";
+      String[] operators = {"=", "<", ">"};
+      for(String o : operators) {
+        if(mode.indexOf(o) == -1) Mode += o;
+      }
+      mode = Mode;
+      return this;
+    }
+    public Integer Copy() {
+      return (new Integer(valueKey, mode, threshold));
     }
     
     public String GetKey() {
@@ -21,17 +31,18 @@ public static class Trigger {
     }
     
     public boolean IsTrigger() {
+      boolean result = false;
       if(mode.indexOf("=") != -1) {
-        if(value == threshold) return true ^ isReverse;
+        if(value == threshold) result = true;
       }
       if(mode.indexOf("<") != -1) {
-        if(value < threshold) return true ^ isReverse;
+        if(value < threshold) result = true;
       }
       if(mode.indexOf(">") != -1) {
-        if(value > threshold) return true ^ isReverse;
+        if(value > threshold) result = true;
       }
       
-      return false ^ isReverse;
+      return result;
     }
     
     public String toString() {
@@ -40,7 +51,6 @@ public static class Trigger {
   }
   public static class Float {
     private float value, threshold;
-    private boolean isReverse;
     private String mode;
     private String valueKey;
     
@@ -48,7 +58,18 @@ public static class Trigger {
       valueKey = Key;
       mode = Mode;
       threshold = Threshold;
-      isReverse = false;
+    }
+    public Float Reverse() {
+      String Mode = "";
+      String[] operators = {"=", "<", ">"};
+      for(String o : operators) {
+        if(mode.indexOf(o) == -1) Mode += o;
+      }
+      mode = Mode;
+      return this;
+    }
+    public Float Copy() {
+      return (new Float(valueKey, mode, threshold));
     }
     
     public String GetKey() {
@@ -60,17 +81,18 @@ public static class Trigger {
     }
     
     public boolean IsTrigger() {
+      boolean result = false;
       if(mode.indexOf("=") != -1) {
-        if(value == threshold) return true ^ isReverse;
+        if(value == threshold) result = true;
       }
       if(mode.indexOf("<") != -1) {
-        if(value < threshold) return true ^ isReverse;
+        if(value < threshold) result = true;
       }
       if(mode.indexOf(">") != -1) {
-        if(value > threshold) return true ^ isReverse;
+        if(value > threshold) result = true;
       }
       
-      return false ^ isReverse;
+      return result;
     }
     
     public String toString() {
@@ -86,10 +108,16 @@ public static class Trigger {
       this(Key, false);
       isReverse = false;
     }
-    
     Boolean(String Key, boolean Reverse) {
       valueKey = Key;
       isReverse = Reverse;
+    }
+    public Boolean Reverse() {
+      isReverse = !isReverse;
+      return this;
+    }
+    public Boolean Copy() {
+      return (new Boolean(valueKey, isReverse));
     }
     
     public String GetKey() {
@@ -105,7 +133,7 @@ public static class Trigger {
     }
     
     public String toString() {
-      return "{" + IsTrigger() + ", " + valueKey + ":" + value + "}";
+      return "{" + IsTrigger() + ", " + valueKey + ":" + value + "(R:" + isReverse + ")}";
     }
   }
 }

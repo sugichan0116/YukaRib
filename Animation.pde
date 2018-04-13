@@ -2,12 +2,14 @@ public static class Animation extends Volume.Float{
   private PImage[] anime;
   private ArrayList<Transition> list;
   private boolean isLoop;
+  private String logText;
   
   //Constructors
   Animation() {
     anime = null;
     isLoop = false;
     Clear();
+    logText = "";
   }
   public static Animation Create() {
     return new Animation();
@@ -55,9 +57,16 @@ public static class Animation extends Volume.Float{
   
   public Animation GetDestination() {
     for(Transition t: list) {
-      if(t.IsTransfer()) return t.GetDestination();
+      if(t.IsTransfer()) {
+        logText += ", " + "trans in " + t;
+        return t.GetDestination();
+      }
     }
-    
+    if(logText == "") {
+      for(Transition t: list) {
+        logText += ", " + t;
+      }
+    }
     return null;
   }
   
@@ -71,7 +80,9 @@ public static class Animation extends Volume.Float{
   }
   
   public String toString() {
-    return "{" + IsTransfer() + GetIndex() + "}";
+    String text = "{Play:" + super.toString() + ", Loop:" + isLoop + logText + "}";
+    logText = "";
+    return text;
   }
   
 }

@@ -21,6 +21,7 @@ Limit.Float limitMax = Limit.Float.Create().Set(0, 255);
 Volume.Float edu = Volume.Float.Create().Limit(limitMax).Value(4f);
 AnimationField slime;
 Volume.Float eat;
+Transition t = (new Transition()).Trigger(new Trigger.Float("EAT", ">=", 1f)), s;
 
 void setup() {
   println("* image loading...");
@@ -32,7 +33,6 @@ void setup() {
   icons.put("SLIME_EAT", image.Slice("slime_e.png", 32, 32, 2, 2));
   icons.put("EAT", image.Slice("slime_e.png", 32, 32, 4, 4));
   
-  Transition t = (new Transition()).Trigger(new Trigger.Float("EAT", ">=", 1f));
   eat = (new Volume.Float()).Limit(new Limit.Float(3f));
   slime = (new AnimationField())
     .Boolean("RIGHT", false)
@@ -46,10 +46,10 @@ void setup() {
     .Animation("UP", (new Animation()).Images(icons.get("SLIME_UP")).Limit(new Limit.Float(1.2f)).Loop())
     .Animation("DOWN", (new Animation()).Images(icons.get("SLIME_DOWN")).Limit(new Limit.Float(1.7f)).Loop())
     .Animation("EAT", (new Animation()).Images(icons.get("SLIME_EAT")).Limit(new Limit.Float(2.0f)))
-    .BiTransition("IDLE", "LEFT", (new Transition()).Trigger(new Trigger.Boolean("LEFT")), t.CopyReverse())
-    .BiTransition("IDLE", "RIGHT", (new Transition()).Trigger(new Trigger.Boolean("RIGHT")), t.CopyReverse())
-    .BiTransition("IDLE", "UP", (new Transition()).Trigger(new Trigger.Boolean("UP")), t.CopyReverse())
-    .BiTransition("IDLE", "DOWN", (new Transition()).Trigger(new Trigger.Boolean("DOWN")), t.CopyReverse())
+    .BiTransition("IDLE", "LEFT", (new Transition()).Trigger(new Trigger.Boolean("LEFT")))
+    .BiTransition("IDLE", "RIGHT", (new Transition()).Trigger(new Trigger.Boolean("RIGHT")))
+    .BiTransition("IDLE", "UP", (new Transition()).Trigger(new Trigger.Boolean("UP")))
+    .BiTransition("IDLE", "DOWN", (new Transition()).Trigger(new Trigger.Boolean("DOWN")))
     .BiTransition("IDLE", "EAT", t);
 }
 
@@ -66,5 +66,5 @@ void draw() {
     .Float("EAT", eat.GetValue())
     .Update();
   image(slime.GetImage(), 0, 0);
-  println("*" + slime + slime.booleans.get("WALK"));
+  println("*" + slime);
 }

@@ -5,13 +5,14 @@ public static class AnimationField {
   private Map<String, Integer> integers;
   private Map<String, Boolean> booleans;
   private float timeOfFrame;
+  private String logText;
   
   AnimationField() {
     list = new HashMap<String, Animation>();
     floats = new HashMap<String, Float>();
     integers = new HashMap<String, Integer>();
     booleans = new HashMap<String, Boolean>();
-    headKey = "";
+    headKey = logText = "";
     timeOfFrame = 0f;
   }
   public static AnimationField Create() {
@@ -38,7 +39,7 @@ public static class AnimationField {
   public AnimationField BiTransition(String From, String To, Transition... target) {
     for(Transition t: target) {
       Transition(From, To, t);
-      Transition(To, From, t.CopyReverse());
+      Transition(To, From, t.Copy().Reverse());
     }
     return this;
   }
@@ -66,11 +67,15 @@ public static class AnimationField {
         if(list.get(Key) == destination) {
           headKey = Key;
           GetHead().Value(0f);
-          println("* HEAD had changed");
+          Log("HEAD had changed");
           return;
         }
       }
     }
+  }
+  
+  private void Log(String text) {
+    logText += " '" + text + "'";
   }
   
   public void Update() {
@@ -113,6 +118,8 @@ public static class AnimationField {
   }
   
   public String toString() {
-    return "{" + headKey + "(" + GetIndex() + ")" + "}";
+    String text = "{" + headKey + "(" + GetIndex() + ") " + GetHead() + logText + "}";
+    logText = "";
+    return text;
   }
 }
